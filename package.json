@@ -1,0 +1,31 @@
+{
+  "name": "catcontrol",
+  "version": "1.0.0",
+  "main": "./src/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel ./src/index.html",
+    "prebuild-dev": "shx rm -rf dist/*",
+    "build-dev": "parcel build ./src/index.html --no-optimize --public-url ./",
+    "prebuild": "shx rm -rf dist/*",
+    "build": "parcel build ./src/index.html --public-url ./",
+    "push-gh-pages": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
+  },
+  "keywords": [],
+  "author": "Samantha Lee",
+  "license": "ISC",
+  "dependencies": {
+    "cannon-es": "^0.20.0",
+    "dat.gui": "^0.7.9",
+    "gh-pages": "^4.0.0",
+    "three": "^0.148.0"
+  },
+  "devDependencies": {
+    "@parcel/config-default": "^2.8.2",
+    "parcel-reporter-static-files-copy": "^1.5.0"
+  },
+  "staticFiles": {
+    "staticOutPath": "assets"
+  },
+  "description": ""
+}
