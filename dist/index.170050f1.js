@@ -626,7 +626,7 @@ scene.add(vibrator);
 const vibratorPhysMat = new _cannonEs.Material();
 const vibratorBody = new _cannonEs.Body({
     shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 0.25, 2)),
-    mass: 1,
+    mass: 100,
     position: new _cannonEs.Vec3(0, 2, 0),
     material: vibratorPhysMat
 });
@@ -646,8 +646,8 @@ const buildingPhysMat = new _cannonEs.Material();
 const buildingBody = new _cannonEs.Body({
     shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 5, 4.3)),
     // shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
-    mass: 5,
-    position: new _cannonEs.Vec3(0, 8, -0.2),
+    mass: 4,
+    position: new _cannonEs.Vec3(0, 7, -0.2),
     material: buildingPhysMat
 });
 world.addBody(buildingBody);
@@ -672,12 +672,12 @@ const catPhysMat = new _cannonEs.Material();
 const catBody = new _cannonEs.Body({
     shape: new _cannonEs.Box(new _cannonEs.Vec3(3, 3.5, 2.8)),
     mass: 2,
-    position: new _cannonEs.Vec3(-0.4, 15, -0.9),
+    position: new _cannonEs.Vec3(-0.4, 15, -0.4),
     material: catPhysMat
 });
 world.addBody(catBody);
 const BuildingVibratorContactMat = new _cannonEs.ContactMaterial(buildingPhysMat, vibratorPhysMat, {
-    friction: 1
+    friction: 10
 });
 world.addContactMaterial(BuildingVibratorContactMat);
 const BuildingCatContactMat = new _cannonEs.ContactMaterial(buildingPhysMat, catPhysMat, {
