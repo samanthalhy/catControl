@@ -127,9 +127,9 @@ scene.add(vibrator);
 
 const vibratorPhysMat = new CANNON.Material();
 const vibratorBody = new CANNON.Body({
-    shape: new CANNON.Box(new CANNON.Vec3(5, 0.2, 4)),
+    shape: new CANNON.Box(new CANNON.Vec3(5, 0.25, 2)),
     mass: 1,
-    position: new CANNON.Vec3(0,1,0),
+    position: new CANNON.Vec3(0,2,0),
     material: vibratorPhysMat
 });
 world.addBody(vibratorBody);
@@ -152,7 +152,7 @@ const buildingBody = new CANNON.Body({
     shape: new CANNON.Box(new CANNON.Vec3(5, 5, 4.3)),
     // shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
     mass: 5,
-    position: new CANNON.Vec3(0,6,0),
+    position: new CANNON.Vec3(0,8,-0.2),
     material: buildingPhysMat
 });
 world.addBody(buildingBody);
@@ -329,8 +329,8 @@ function animate(time) {
         catBody.mass = options.catMass;
     }else{
         catBody.mass = 50;
-        BuildingCatContactMat.friction = 10;
-        if (t > 20){
+        BuildingCatContactMat.friction = 100;
+        if (t > 50){
             loadingCompleted = true;
         }
     }
