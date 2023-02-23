@@ -549,7 +549,8 @@ const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.inner
 const orbit = new (0, _orbitControlsJs.OrbitControls)(camera, renderer.domElement);
 // const axesHelper = new THREE.AxesHelper(5);
 // scene.add(axesHelper);
-camera.position.set(0, 5, 15);
+camera.position.set(0, 10, 20);
+camera.up.set(0, 0, 0);
 orbit.update();
 /////////////////////// LIGHT SETTING BELOW ///////////////////////
 // const ambientLight = new THREE.AmbientLight(0xffffff);
@@ -626,14 +627,15 @@ const vibratorPhysMat = new _cannonEs.Material();
 const vibratorBody = new _cannonEs.Body({
     shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 0.2, 4)),
     mass: 1,
-    position: new _cannonEs.Vec3(0, 5, 0),
+    position: new _cannonEs.Vec3(0, 1, 0),
     material: vibratorPhysMat
 });
 world.addBody(vibratorBody);
 vibratorBody.angularDamping = 0.5;
 vibrator.receiveShadow = true;
 /////////////////////// BUILDING BELOW ///////////////////////
-const buildingGeometry = new _three.BoxGeometry(5, 0.5, 4.5);
+const buildingGeometry = new _three.BoxGeometry(5, 10, 4.5);
+// const buildingGeometry = new THREE.BoxGeometry(5, 0.5, 4.5);
 const buildingMaterial = new _three.MeshStandardMaterial({
     color: 0x00FF00
 });
@@ -642,9 +644,10 @@ scene.add(building);
 // box.position.set(5,5,5);
 const buildingPhysMat = new _cannonEs.Material();
 const buildingBody = new _cannonEs.Body({
-    shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 0.3, 4.3)),
+    shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 5, 4.3)),
+    // shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
     mass: 5,
-    position: new _cannonEs.Vec3(0, 10, 0),
+    position: new _cannonEs.Vec3(0, 6, 0),
     material: buildingPhysMat
 });
 world.addBody(buildingBody);
@@ -659,7 +662,7 @@ gltfLoader.load("./assets/cat.gltf", function(gltf) {
     const model = gltf.scene;
     scene.add(model);
     cat3d = model;
-    cat3d.scale.multiplyScalar(30);
+    cat3d.scale.multiplyScalar(40);
     // cat3d.position.set(0,0,0);
     cat3d.traverse(function(node) {
         if (node.isMesh) node.castShadow = true;
@@ -668,8 +671,8 @@ gltfLoader.load("./assets/cat.gltf", function(gltf) {
 const catPhysMat = new _cannonEs.Material();
 const catBody = new _cannonEs.Body({
     shape: new _cannonEs.Box(new _cannonEs.Vec3(3, 3.5, 2.8)),
-    mass: 5,
-    position: new _cannonEs.Vec3(-0.4, 20, -0.4),
+    mass: 2,
+    position: new _cannonEs.Vec3(-0.4, 15, -0.9),
     material: catPhysMat
 });
 world.addBody(catBody);
@@ -678,11 +681,11 @@ const BuildingVibratorContactMat = new _cannonEs.ContactMaterial(buildingPhysMat
 });
 world.addContactMaterial(BuildingVibratorContactMat);
 const BuildingCatContactMat = new _cannonEs.ContactMaterial(buildingPhysMat, catPhysMat, {
-    friction: 0.001
+    friction: 5
 });
 world.addContactMaterial(BuildingCatContactMat);
 const VibratorCatContactMat = new _cannonEs.ContactMaterial(vibratorPhysMat, catPhysMat, {
-    friction: 0
+    friction: 0.001
 });
 world.addContactMaterial(VibratorCatContactMat);
 /////////////////////// OBJECTS INSTANCES BELOW ///////////////////////
@@ -692,10 +695,11 @@ let resetClicked = false;
 const gui = new (0, _lilGuiDefault.default)();
 const defVal_bg = "0xededed";
 const defVal_speed = 0.00;
-const defVal_friction = 0.001;
+const defVal_friction = 1;
+// const defVal_friction = 0.001;
 const defVal_amplitude = 1;
-const defVal_damping = 0.5;
-const defVal_catMass = 5;
+const defVal_damping = 0.0;
+const defVal_catMass = 2;
 var options = {
     blackgroundColor: defVal_bg,
     speed: defVal_speed,
@@ -719,7 +723,7 @@ var options = {
 gui.addColor(options, "blackgroundColor").onChange(function(e) {
     renderer.setClearColor(e);
 });
-const controller = gui.add(options, "speed", 0, 1);
+gui.add(options, "speed", 0, 1);
 gui.add(options, "friction", 0, 1);
 gui.add(options, "amplitude", 0, 15);
 gui.add(options, "damping", 0, 1);
@@ -737,6 +741,7 @@ window.addEventListener("mousemove", function(e) {
 const rayCaster = new _three.Raycaster();
 // const sphereId = sphere.id;
 // cat.name = 'theCat';
+let loadingCompleted = false;
 function animate(time) {
     t += 1;
     world.step(timeStep);
@@ -754,11 +759,17 @@ function animate(time) {
     // ball.quaternion.copy(ballBody.quaternion);
     // box.rotation.x = time / 1000;
     // box.rotation.y = time / 1000;
-    step += options.speed;
-    // buildingBody.position.x = 5 * (Math.sin(step));
-    vibratorBody.position.x = options.amplitude * Math.sin(step) * Math.exp(-t * options.damping / 1000);
-    BuildingCatContactMat.friction = options.friction / 10;
-    catBody.mass = options.catMass;
+    if (loadingCompleted == true) {
+        step += options.speed / 2;
+        // buildingBody.position.x = 5 * (Math.sin(step));
+        vibratorBody.position.x = options.amplitude * Math.sin(step) * Math.exp(-t * options.damping / 1000);
+        BuildingCatContactMat.friction = options.friction / 1000;
+        catBody.mass = options.catMass;
+    } else {
+        catBody.mass = 50;
+        BuildingCatContactMat.friction = 10;
+        if (t > 20) loadingCompleted = true;
+    }
     // spotLight.angle = options.lightAngle;
     // spotLight.penumbra = options.penumbra;
     // spotLight.intensity = options.intensity;

@@ -28,7 +28,8 @@ const orbit = new OrbitControls(camera, renderer.domElement);
 // const axesHelper = new THREE.AxesHelper(5);
 // scene.add(axesHelper);
 
-camera.position.set(0, 5, 15);
+camera.position.set(0, 10, 20);
+camera.up.set(0, 0, 0)
 orbit.update();
 
 
@@ -128,7 +129,7 @@ const vibratorPhysMat = new CANNON.Material();
 const vibratorBody = new CANNON.Body({
     shape: new CANNON.Box(new CANNON.Vec3(5, 0.2, 4)),
     mass: 1,
-    position: new CANNON.Vec3(0,5,0),
+    position: new CANNON.Vec3(0,1,0),
     material: vibratorPhysMat
 });
 world.addBody(vibratorBody);
@@ -139,7 +140,8 @@ vibrator.receiveShadow = true;
 
 /////////////////////// BUILDING BELOW ///////////////////////
 
-const buildingGeometry = new THREE.BoxGeometry(5, 0.5, 4.5);
+const buildingGeometry = new THREE.BoxGeometry(5, 10, 4.5);
+// const buildingGeometry = new THREE.BoxGeometry(5, 0.5, 4.5);
 const buildingMaterial = new THREE.MeshStandardMaterial({color: 0x00FF00});
 const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
 scene.add(building);
@@ -147,9 +149,10 @@ scene.add(building);
 
 const buildingPhysMat = new CANNON.Material();
 const buildingBody = new CANNON.Body({
-    shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
+    shape: new CANNON.Box(new CANNON.Vec3(5, 5, 4.3)),
+    // shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
     mass: 5,
-    position: new CANNON.Vec3(0,10,0),
+    position: new CANNON.Vec3(0,6,0),
     material: buildingPhysMat
 });
 world.addBody(buildingBody);
@@ -171,7 +174,7 @@ gltfLoader.load('./assets/cat.gltf', function(gltf){
     
     scene.add(model);
     cat3d = model;
-    cat3d.scale.multiplyScalar(30);
+    cat3d.scale.multiplyScalar(40);
     // cat3d.position.set(0,0,0);
     cat3d.traverse(function(node){
         if (node.isMesh)
@@ -184,8 +187,8 @@ gltfLoader.load('./assets/cat.gltf', function(gltf){
 const catPhysMat = new CANNON.Material();
 const catBody = new CANNON.Body({
     shape: new CANNON.Box(new CANNON.Vec3(3, 3.5, 2.8)),
-    mass: 5,
-    position: new CANNON.Vec3(-0.4, 20, -0.4),
+    mass: 2,
+    position: new CANNON.Vec3(-0.4, 15, -0.9),
     material: catPhysMat
 });
 world.addBody(catBody);
@@ -201,7 +204,7 @@ world.addContactMaterial(BuildingVibratorContactMat);
 const BuildingCatContactMat = new CANNON.ContactMaterial(
     buildingPhysMat,
     catPhysMat,
-    {friction: 0.001}
+    {friction: 5}
 );
 
 world.addContactMaterial(BuildingCatContactMat);
@@ -209,7 +212,7 @@ world.addContactMaterial(BuildingCatContactMat);
 const VibratorCatContactMat = new CANNON.ContactMaterial(
     vibratorPhysMat,
     catPhysMat,
-    {friction: 0}
+    {friction: 0.001}
 );
 
 world.addContactMaterial(VibratorCatContactMat);
@@ -224,10 +227,11 @@ let resetClicked = false;
 const gui = new GUI();
 const defVal_bg = '0xededed';
 const defVal_speed = 0.00;
-const defVal_friction = 0.001;
+const defVal_friction = 1;
+// const defVal_friction = 0.001;
 const defVal_amplitude = 1;
-const defVal_damping = 0.5;
-const defVal_catMass = 5;
+const defVal_damping = 0.0;
+const defVal_catMass = 2;
 
 var options = {
     blackgroundColor: defVal_bg,
@@ -258,7 +262,7 @@ gui.addColor(options, 'blackgroundColor').onChange(function(e){
 
 
 
-const controller = gui.add(options, 'speed', 0, 1);
+gui.add(options, 'speed', 0, 1);
 gui.add(options, 'friction', 0, 1);
 gui.add(options, 'amplitude', 0, 15);
 gui.add(options, 'damping', 0, 1);
@@ -288,6 +292,8 @@ const rayCaster = new THREE.Raycaster();
 // const sphereId = sphere.id;
 // cat.name = 'theCat';
 
+let loadingCompleted = false
+
 function animate(time) {
     t += 1;
     world.step(timeStep);
@@ -312,13 +318,22 @@ function animate(time) {
 	// box.rotation.x = time / 1000;
 	// box.rotation.y = time / 1000;
 
-    step += options.speed;
-    // buildingBody.position.x = 5 * (Math.sin(step));
-    vibratorBody.position.x = options.amplitude * (Math.sin(step)) * Math.exp(-t * options.damping/1000);
+    if (loadingCompleted == true){
 
-    BuildingCatContactMat.friction = options.friction/10;
+        step += (options.speed/2);
+        // buildingBody.position.x = 5 * (Math.sin(step));
+        vibratorBody.position.x = options.amplitude * (Math.sin(step)) * Math.exp(-t * options.damping/1000);
 
-    catBody.mass = options.catMass;
+        BuildingCatContactMat.friction = options.friction/1000;
+
+        catBody.mass = options.catMass;
+    }else{
+        catBody.mass = 50;
+        BuildingCatContactMat.friction = 10;
+        if (t > 20){
+            loadingCompleted = true;
+        }
+    }
 
     // spotLight.angle = options.lightAngle;
     // spotLight.penumbra = options.penumbra;
