@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-import * as dat from 'dat.gui';
-import catImg from '../img/cat.png'
+// import * as dat from 'dat.gui';
+import GUI from 'lil-gui'; 
 import { Texture } from 'three';
 import { TextureLoader } from 'three';
 import { ObjectLoader } from 'three';
@@ -25,8 +25,8 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHei
 
 const orbit = new OrbitControls(camera, renderer.domElement);
 
-const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(5);
+// scene.add(axesHelper);
 
 camera.position.set(0, 5, 15);
 orbit.update();
@@ -60,8 +60,8 @@ spotLight.position.set(-100, 100, 0);
 spotLight.castShadow = true;
 spotLight.angle = 0.2;
 
-const sLightHelper = new THREE.SpotLightHelper(spotLight);
-scene.add(sLightHelper);
+// const sLightHelper = new THREE.SpotLightHelper(spotLight);
+// scene.add(sLightHelper);
 
 const spotLight2 = new THREE.SpotLight(0xffffff);
 scene.add(spotLight2);
@@ -91,7 +91,7 @@ const world = new CANNON.World({
     gravity: new CANNON.Vec3(0,-9.81,0)
 });
 
-const groundGeometry = new THREE.BoxGeometry(20, 0.5, 5);
+const groundGeometry = new THREE.BoxGeometry(18, 0.5, 5);
 const groundMaterial = new THREE.MeshStandardMaterial({
     color: 0xFFFFFF,
     side: THREE.DoubleSide
@@ -103,7 +103,7 @@ ground.receiveShadow = true;
 
 const groundPhysMat = new CANNON.Material();
 const groundBody = new CANNON.Body({
-    shape: new CANNON.Box(new CANNON.Vec3(18,0.5,5)),
+    shape: new CANNON.Box(new CANNON.Vec3(15,0.5,5)),
     // mass:10
     type: CANNON.Body.STATIC,
     material: groundPhysMat
@@ -126,7 +126,7 @@ scene.add(vibrator);
 
 const vibratorPhysMat = new CANNON.Material();
 const vibratorBody = new CANNON.Body({
-    shape: new CANNON.Box(new CANNON.Vec3(1, 0.2, 4)),
+    shape: new CANNON.Box(new CANNON.Vec3(5, 0.2, 4)),
     mass: 1,
     position: new CANNON.Vec3(0,5,0),
     material: vibratorPhysMat
@@ -149,7 +149,7 @@ const buildingPhysMat = new CANNON.Material();
 const buildingBody = new CANNON.Body({
     shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
     mass: 5,
-    position: new CANNON.Vec3(0,15,0),
+    position: new CANNON.Vec3(0,10,0),
     material: buildingPhysMat
 });
 world.addBody(buildingBody);
@@ -184,12 +184,19 @@ gltfLoader.load('./assets/cat.gltf', function(gltf){
 const catPhysMat = new CANNON.Material();
 const catBody = new CANNON.Body({
     shape: new CANNON.Box(new CANNON.Vec3(3, 3.5, 2.8)),
-    mass: 0.5,
-    position: new CANNON.Vec3(0, 25, -1),
+    mass: 5,
+    position: new CANNON.Vec3(-0.4, 20, -0.4),
     material: catPhysMat
 });
 world.addBody(catBody);
 
+const BuildingVibratorContactMat = new CANNON.ContactMaterial(
+    buildingPhysMat,
+    vibratorPhysMat,
+    {friction: 1}
+);
+
+world.addContactMaterial(BuildingVibratorContactMat);
 
 const BuildingCatContactMat = new CANNON.ContactMaterial(
     buildingPhysMat,
@@ -212,18 +219,38 @@ world.addContactMaterial(VibratorCatContactMat);
 
 
 /////////////////////// CONTROL PANEL BELOW ///////////////////////
+let t = 0;
+let resetClicked = false;
+const gui = new GUI();
+const defVal_bg = '0xededed';
+const defVal_speed = 0.00;
+const defVal_friction = 0.001;
+const defVal_amplitude = 1;
+const defVal_damping = 0.5;
+const defVal_catMass = 5;
 
-const gui = new dat.GUI();
-const options = {
-    blackgroundColor: '#ffea00',
-    speed: 0.01,
-    friction: 0.001,
-    amplitude: 5,
-    catMass: 0.5
+var options = {
+    blackgroundColor: defVal_bg,
+    speed: defVal_speed,
+    friction: defVal_friction,
+    amplitude: defVal_amplitude,
+    damping: defVal_damping,
+    catMass: defVal_catMass,
     // lightAngle: 0.2,
     // penumbra: 0,
     // intensity: 1
+    
+    ResetTime: function() {
+        t = 0;
+    },
+    ResetAll: function() {
+        t = 0;
+        resetClicked = true;
+        gui.reset();
+        window.location.reload();
+    }
 };
+
 
 gui.addColor(options, 'blackgroundColor').onChange(function(e){
     renderer.setClearColor(e);
@@ -231,13 +258,14 @@ gui.addColor(options, 'blackgroundColor').onChange(function(e){
 
 
 
-gui.add(options, 'speed', 0, 1);
+const controller = gui.add(options, 'speed', 0, 1);
 gui.add(options, 'friction', 0, 1);
 gui.add(options, 'amplitude', 0, 15);
+gui.add(options, 'damping', 0, 1);
 gui.add(options, 'catMass', 0, 10);
-// gui.add(options, 'lightAngle', 0, 1);
-// gui.add(options, 'penumbra', 0, 1);
-// gui.add(options, 'intensity', 0, 1);
+gui.add(options, 'ResetTime');
+gui.add(options, 'ResetAll');
+
 
 /////////////////////// LOOP BELOW ///////////////////////
 
@@ -261,6 +289,7 @@ const rayCaster = new THREE.Raycaster();
 // cat.name = 'theCat';
 
 function animate(time) {
+    t += 1;
     world.step(timeStep);
 
     ground.position.copy(groundBody.position);
@@ -285,9 +314,9 @@ function animate(time) {
 
     step += options.speed;
     // buildingBody.position.x = 5 * (Math.sin(step));
-    vibratorBody.position.x = options.amplitude * (Math.sin(step));
+    vibratorBody.position.x = options.amplitude * (Math.sin(step)) * Math.exp(-t * options.damping/1000);
 
-    BuildingCatContactMat.friction = options.friction;
+    BuildingCatContactMat.friction = options.friction/10;
 
     catBody.mass = options.catMass;
 

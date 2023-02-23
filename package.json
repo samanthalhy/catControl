@@ -1,15 +1,13 @@
 {
   "name": "catcontrol",
   "version": "1.0.0",
-  "main": "./src/index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel ./src/index.html",
-    "prebuild-dev": "shx rm -rf dist/*",
     "build-dev": "parcel build ./src/index.html --no-optimize --public-url ./",
-    "prebuild": "shx rm -rf dist/*",
     "build": "parcel build ./src/index.html --public-url ./",
-    "push-gh-pages": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
+    "push-gh-pages": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose",
+    "deploy": "gh-pages -d ./dist/"
   },
   "keywords": [],
   "author": "Samantha Lee",
@@ -17,15 +15,25 @@
   "dependencies": {
     "cannon-es": "^0.20.0",
     "dat.gui": "^0.7.9",
-    "gh-pages": "^4.0.0",
     "three": "^0.148.0"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.8.2",
+    "gh-pages": "^4.0.0",
+    "lil-gui": "^0.18.0",
     "parcel-reporter-static-files-copy": "^1.5.0"
   },
   "staticFiles": {
     "staticOutPath": "assets"
   },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samanthalhy/catControl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/samanthalhy/catControl/issues"
+  },
+  "homepage": "https://github.com/samanthalhy/catControl#readme",
   "description": ""
 }
