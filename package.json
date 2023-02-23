@@ -15,7 +15,8 @@
   "dependencies": {
     "cannon-es": "^0.20.0",
     "dat.gui": "^0.7.9",
-    "three": "^0.148.0"
+    "three": "^0.148.0",
+    "lil-gui": "^0.18.0"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.8.2",
@@ -26,7 +27,8 @@
   "staticFiles": {
     "staticOutPath": "assets"
   },
-  "main": "index.js",
+
+  "source": "src/index.html",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/samanthalhy/catControl.git"
