@@ -559,13 +559,13 @@ orbit.update();
 // scene.add(ambientLight);
 const directionalLight = new _three.DirectionalLight(0xffffff, 1.0);
 scene.add(directionalLight);
-directionalLight.position.set(-30, 50, 0);
-directionalLight.castShadow = true;
-directionalLight.shadow.camera.bottom = -12;
+directionalLight.position.set(0, 300, 0);
+directionalLight.castShadow = false;
+directionalLight.shadow.camera.bottom = -30;
 const directionalLight2 = new _three.DirectionalLight(0xffffff, 1.0);
 scene.add(directionalLight2);
 directionalLight2.position.set(30, 50, 10);
-directionalLight2.castShadow = true;
+directionalLight2.castShadow = false;
 directionalLight2.shadow.camera.bottom = -12;
 // const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
 // scene.add(directionalLightHelper);
@@ -573,7 +573,7 @@ directionalLight2.shadow.camera.bottom = -12;
 // scene.add(dLightShadowHelper);
 const spotLight = new _three.SpotLight(0xffffff);
 scene.add(spotLight);
-spotLight.position.set(-30, 100, 0);
+spotLight.position.set(-100, 100, 0);
 spotLight.castShadow = true;
 spotLight.angle = 0.2;
 // const sLightHelper = new THREE.SpotLightHelper(spotLight);
@@ -589,6 +589,8 @@ spotLight3.position.set(-30, 0, 100);
 const spotLight4 = new _three.SpotLight(0xffffff);
 scene.add(spotLight4);
 spotLight4.position.set(30, 0, -100);
+// const sLightHelper2 = new THREE.SpotLightHelper(spotLight4);
+// scene.add(sLightHelper2);
 // scene.fog = new THREE.Fog(0xffffff, 0, 200);
 scene.fog = new _three.FogExp2(0xffffff, 0.01);
 // renderer.setClearColor(0xffea00);   // blackground color
@@ -597,7 +599,7 @@ renderer.setClearColor(0xededed); // blackground color
 const world = new _cannonEs.World({
     gravity: new _cannonEs.Vec3(0, -9.81, 0)
 });
-const groundGeometry = new _three.BoxGeometry(18, 0.4, 10);
+const groundGeometry = new _three.BoxGeometry(50, 0.5, 50);
 const groundMaterial = new _three.MeshStandardMaterial({
     color: 0xFFFFFF,
     side: _three.DoubleSide
@@ -608,7 +610,7 @@ scene.add(ground);
 ground.receiveShadow = true;
 const groundPhysMat = new _cannonEs.Material();
 const groundBody = new _cannonEs.Body({
-    shape: new _cannonEs.Box(new _cannonEs.Vec3(9, 0.2, 5)),
+    shape: new _cannonEs.Box(new _cannonEs.Vec3(25, 0.25, 25)),
     // mass:10
     type: _cannonEs.Body.STATIC,
     material: groundPhysMat
@@ -630,116 +632,168 @@ scene.add(gridHelper);
 // boxBody.linearDamping = 0.01;//设置线性阻尼
 // boxBody.angularDamping = 0.01;//设置旋转阻尼
 // world.addBody(boxBody);//将刚体添加到物理世界中
-const vibratorGeometry = new _three.BoxGeometry(10, 5, 8);
-const vibratorMaterial = new _three.MeshNormalMaterial({
+const vibratorGeometry = new _three.BoxGeometry(20, 0.5, 9);
+const vibratorMaterial = new _three.MeshStandardMaterial({
     color: 0xFF0000
 }, {
-    roughness: 0.2
+    roughness: 0.5
 });
 const vibrator = new _three.Mesh(vibratorGeometry, vibratorMaterial);
 scene.add(vibrator);
 // box.position.set(5,5,5);
 const vibratorPhysMat = new _cannonEs.Material({
-    friction: 0.2,
+    friction: 0.8,
     restitution: 0.0
 });
 const vibratorBody = new _cannonEs.Body({
-    shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 2.5, 4)),
-    mass: 30,
-    position: new _cannonEs.Vec3(-0.2, 6.5, 0),
+    shape: new _cannonEs.Box(new _cannonEs.Vec3(10, 0.25, 4.5)),
+    mass: 100,
+    position: new _cannonEs.Vec3(0, 0.5, 0),
     material: vibratorPhysMat
 });
 world.addBody(vibratorBody);
 // vibratorBody.angularDamping = 0.5;
 vibrator.receiveShadow = true;
 /////////////////////// BUILDING BELOW ///////////////////////
-// const buildingGeometry = new THREE.BoxGeometry(5, 8, 4.5);
-// // const buildingGeometry = new THREE.BoxGeometry(5, 0.5, 4.5);
-// const buildingMaterial = new THREE.MeshStandardMaterial({color: 0x00FF00}, {roughness: 0.5});
-// const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
-// scene.add(building);
-// // box.position.set(5,5,5);
-// const buildingPhysMat = new CANNON.Material({friction: 0.8, restitution: 0.1});
-// const buildingBody = new CANNON.Body({
-//     shape: new CANNON.Box(new CANNON.Vec3(2.5, 4, 2.25)),
-//     // shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
-//     mass: 10,
-//     position: new CANNON.Vec3(0,4.8,-0.2),
-//     material: buildingPhysMat
-// });
-// world.addBody(buildingBody);
-// // buildingBody.angularDamping = 0.5;
+const buildingGeometry = new _three.BoxGeometry(10, 8, 8.5);
+// const buildingGeometry = new THREE.BoxGeometry(5, 0.5, 4.5);
+const buildingMaterial = new _three.MeshStandardMaterial({
+    color: 0x00FF00
+}, {
+    roughness: 0.5
+});
+const building = new _three.Mesh(buildingGeometry, buildingMaterial);
+scene.add(building);
+// box.position.set(5,5,5);
+const buildingPhysMat = new _cannonEs.Material({
+    friction: 0.8,
+    restitution: 0.1
+});
+const buildingBody = new _cannonEs.Body({
+    shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 4, 4.25)),
+    // shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
+    mass: 200,
+    position: new _cannonEs.Vec3(0, 4.8, -0.2),
+    material: buildingPhysMat
+});
+world.addBody(buildingBody);
+// buildingBody.angularDamping = 0.5;
 // buildingBody.linearDamping = 0;
-// building.receiveShadow = true;
+building.receiveShadow = true;
+// const buildingPhysMat = new CANNON.Material({friction: 0.8, restitution: 0.1});
+const buildingRoof1 = new _cannonEs.Body({
+    shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 1, 0.2)),
+    // shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
+    mass: 100,
+    position: new _cannonEs.Vec3(0, 9.5, 3.8),
+    material: buildingPhysMat
+});
+world.addBody(buildingRoof1);
+const buildingRoof2 = new _cannonEs.Body({
+    shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 1, 0.2)),
+    // shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
+    mass: 100,
+    position: new _cannonEs.Vec3(0, 9.5, -4),
+    material: buildingPhysMat
+});
+world.addBody(buildingRoof2);
 /////////////////////// CAT INSTANCES BELOW ///////////////////////
 const gltfLoader = new (0, _gltfloader.GLTFLoader)();
 // const catMeshes = new THREE.Object3D;
 // const catBodies = new CANNON.Body;
 let cat3d = new _three.Object3D();
+// gltfLoader.load('./assets/cat.gltf', function(gltf){
+//     const model = gltf.scene;
+//     scene.add(model);
+//     cat3d = model;
+//     cat3d.scale.multiplyScalar(30);
+//     // cat3d.position.set(0,0,0);
+//     cat3d.traverse(function(node){
+//         if (node.isMesh)
+//             node.castShadow = true;
+//     });
+// });
+// gltfLoader.load('./assets/cat.gltf', function(gltf){
+//     const model = gltf.scene;
+//     scene.add(model);
+//     cat3d = model;
+//     // cat3d.scale.multiplyScalar(30);
+//     // cat3d.position.set(0,0,0);
+//     // cat3d.traverse(function(node){
+//     //     if (node.isMesh)
+//     //         node.castShadow = true;
+//     // });
+//     cat3d.traverse( function ( child ) {
+//         if ( child.isMesh ) {
+//             child.geometry.center(); // center here
+//             child.castShadow = true;
+//             console.log(child.geometry.boundingBox.max.x);
+//             child.geometry.boundingBox.max.x -= 1;
+//             child.position.setX += 3;
+//         }
+//     });
+//     const root = gltf.scene;
+//     const box = new THREE.Box3().setFromObject(root);
+//     const boxSize = box.getSize(new THREE.Vector3()).length();
+//     const boxCenter = box.getCenter(new THREE.Vector3());
+//     gltf.scene.scale.set(25,25,25) // scale here
+//     scene.add( gltf.scene );
+// }, (xhr) => xhr, ( err ) => console.error( e ));
 gltfLoader.load("./assets/cat.gltf", function(gltf) {
     const model = gltf.scene;
     scene.add(model);
     cat3d = model;
-    // cat3d.scale.multiplyScalar(30);
-    // cat3d.position.set(0,0,0);
-    // cat3d.traverse(function(node){
-    //     if (node.isMesh)
-    //         node.castShadow = true;
-    // });
     cat3d.traverse(function(child) {
-        if (child.isMesh) child.geometry.center(); // center here
+        if (child.isMesh) {
+            child.geometry.center();
+            child.castShadow = true;
+            const box = new _three.Box3().setFromObject(child);
+            const boxSize = box.getSize(new _three.Vector3()).length();
+            const boxCenter = box.getCenter(new _three.Vector3());
+            // child.position.setY(child.position.y - boxSize / 2); // adjust position in y-axis
+            child.position.setX(child.position.x + 0.013); // adjust position in x-axis
+        }
     });
-    gltf.scene.scale.set(30, 30, 30) // scale here
-    ;
+    gltf.scene.scale.set(25, 25, 25);
     scene.add(gltf.scene);
 }, (xhr)=>xhr, (err)=>console.error(e));
-// var mroot = cat3d;
-// var bbox = new THREE.Box3().setFromObject(cat3d);
-// var cent = bbox.getCenter(new THREE.Vector3());
-// var size = bbox.getSize(new THREE.Vector3());
-// //Rescale the object to normalized space
-// var maxAxis = Math.max(size.x, size.y, size.z);
-// cat3d.scale.multiplyScalar(1.0 / maxAxis);
-// bbox.setFromObject(cat3d);
-// bbox.getCenter(cent);
-// bbox.getSize(size);
-// //Reposition to 0,halfY,0
-// cat3d.position.copy(cent).multiplyScalar(-1);
-// cat3d.position.y-= (size.y * 0.5);
+// const catPhysMat = new CANNON.Material({friction: 0.9, restitution: 0.01});
+// const catBody = new CANNON.Body({
+//     shape: new CANNON.Box(new CANNON.Vec3(3, 3.5, 2.6)),
+//     mass: 50,
+//     position: new CANNON.Vec3(-0.1, 12.5, -0.2),
+//     material: catPhysMat
+// });
 const catPhysMat = new _cannonEs.Material({
     friction: 0.99,
     restitution: 0.01
 });
 const catBody = new _cannonEs.Body({
-    shape: new _cannonEs.Box(new _cannonEs.Vec3(2, 2, 3.5)),
+    shape: new _cannonEs.Box(new _cannonEs.Vec3(0.6, 1.5, 2.5)),
     mass: 50,
-    position: new _cannonEs.Vec3(0.3, 12.5, 1),
+    position: new _cannonEs.Vec3(0, 11.5, 0),
     material: catPhysMat
 });
 world.addBody(catBody);
 /////////////////////// RELATIONSHIP BELOW ///////////////////////
 // const lockConstraintGround = new CANNON.LockConstraint(buildingBody, catBody);
 // world.addConstraint(lockConstraintGround);
-// const lockConstraint = new CANNON.LockConstraint(vibratorBody, buildingBody);
-// world.addConstraint(lockConstraint);
-// const BuildingVibratorContactMat = new CANNON.ContactMaterial(
-//     buildingPhysMat,
-//     vibratorPhysMat,
-//     {friction: 0.1}
-// );
-// world.addContactMaterial(BuildingVibratorContactMat);
-// var BuildingCatContactMat = new CANNON.ContactMaterial(
-//     buildingPhysMat,
-//     catPhysMat,
-//     {friction: 0.9}
-// );
-// world.addContactMaterial(BuildingCatContactMat);
-const VibratorGroundContactMat = new _cannonEs.ContactMaterial(vibratorPhysMat, groundBody, {
-    friction: 0.01
-});
-world.addContactMaterial(VibratorGroundContactMat);
-const VibratorCatContactMat = new _cannonEs.ContactMaterial(vibratorPhysMat, catPhysMat, {
+const lockConstraint = new _cannonEs.LockConstraint(vibratorBody, buildingBody);
+world.addConstraint(lockConstraint);
+const lockConstraint_roof1 = new _cannonEs.LockConstraint(buildingBody, buildingRoof1);
+world.addConstraint(lockConstraint_roof1);
+const lockConstraint_roof2 = new _cannonEs.LockConstraint(buildingBody, buildingRoof2);
+world.addConstraint(lockConstraint_roof2);
+const BuildingVibratorContactMat = new _cannonEs.ContactMaterial(buildingPhysMat, vibratorPhysMat, {
     friction: 1
+});
+world.addContactMaterial(BuildingVibratorContactMat);
+var BuildingCatContactMat = new _cannonEs.ContactMaterial(buildingPhysMat, catPhysMat, {
+    friction: 1
+});
+world.addContactMaterial(BuildingCatContactMat);
+const VibratorCatContactMat = new _cannonEs.ContactMaterial(vibratorPhysMat, catPhysMat, {
+    friction: 0.001
 });
 world.addContactMaterial(VibratorCatContactMat);
 /////////////////////// OBJECTS INSTANCES BELOW ///////////////////////
@@ -754,13 +808,15 @@ const defVal_friction = 0.5;
 // const defVal_friction = 0.001;
 const defVal_amplitude = 1;
 const defVal_damping = 0.0;
-const defVal_catMass = 1;
+const defVal_damping_Vibrator = 0.0;
+const defVal_catMass = 7;
 var options = {
     blackgroundColor: defVal_bg,
-    frequency: defVal_speed,
+    speed: defVal_speed,
     friction: defVal_friction,
     amplitude: defVal_amplitude,
     damping: defVal_damping,
+    dampingVibrator: defVal_damping_Vibrator,
     catMass: defVal_catMass,
     // lightAngle: 0.2,
     // penumbra: 0,
@@ -782,14 +838,15 @@ var options = {
 gui.addColor(options, "blackgroundColor").onChange(function(e1) {
     renderer.setClearColor(e1);
 });
-gui.add(options, "frequency", 0, 1);
-gui.add(options, "friction", 0, 1);
-gui.add(options, "amplitude", 0, 9);
-gui.add(options, "damping", 0, 1);
-gui.add(options, "catMass", 0, 1);
+gui.add(options, "speed", 0, 1).name("Frequency");
+gui.add(options, "friction", 0, 1).name("Friction");
+gui.add(options, "amplitude", 0, 9).name("Amplitude");
+gui.add(options, "damping", 0, 1).name("Building's Damping");
+gui.add(options, "dampingVibrator", 0, 1).name("Vibrator's Damping");
+gui.add(options, "catMass", 0, 10).name("Cat's Mass");
 gui.add(options, "Start");
-gui.add(options, "ResetTime");
-gui.add(options, "ResetAll");
+gui.add(options, "ResetTime").name("Reset Time");
+gui.add(options, "ResetAll").name("Reset All");
 /////////////////////// LOOP BELOW ///////////////////////
 const timeStep = 1 / 60;
 let step = 0;
@@ -802,19 +859,21 @@ const rayCaster = new _three.Raycaster();
 // const sphereId = sphere.id;
 // cat.name = 'theCat';
 let loadingCompleted = false;
-let y = 0;
-let z = 0;
+let vibrator_y = 0;
+let vibrator_z = 0;
+// const cannonDebugRenderer = new CannonDebugRenderer(scene, world)
 function animate(time) {
     t += 1;
     world.step(timeStep);
+    // cannonDebugRenderer.update()
     ground.position.copy(groundBody.position);
     ground.quaternion.copy(groundBody.quaternion);
     vibrator.position.copy(vibratorBody.position);
     vibrator.quaternion.copy(vibratorBody.quaternion);
-    // building.position.copy(buildingBody.position);
-    // building.quaternion.copy(buildingBody.quaternion);
+    building.position.copy(buildingBody.position);
+    building.quaternion.copy(buildingBody.quaternion);
     cat3d.position.copy(catBody.position);
-    // cat3d.position.y -= 5.4;
+    // cat3d.position.y -= 3.5;
     // catBody.position.y +=4.5;
     cat3d.quaternion.copy(catBody.quaternion);
     // ball.position.copy(ballBody.position);
@@ -822,36 +881,38 @@ function animate(time) {
     // box.rotation.x = time / 1000;
     // box.rotation.y = time / 1000;
     if (loadingCompleted == true & startButton == true) {
-        step += options.frequency / 5;
+        step += options.speed / 5;
         // vibratorBody.applyImpulse(new CANNON.Vec3(5,0,0), new CANNON.Vec3(0,0,0));
-        vibratorBody.velocity.x = 5 * options.amplitude * Math.cos(step);
-        // vibratorBody.linearDamping = options.damping;
-        vibratorBody.velocity.x = vibratorBody.velocity.x * Math.exp(-t * options.damping / 300);
-        vibratorBody.velocity.y = 0;
-        vibratorBody.velocity.z = 0;
+        vibratorBody.velocity.x = 5 * options.amplitude * Math.sin(step - 1.5) * Math.exp(-t * options.dampingVibrator / 1000);
+        vibratorBody.position.y = vibrator_y;
+        vibratorBody.position.z = vibrator_z;
         vibratorBody.angularVelocity.x = 0;
         vibratorBody.angularVelocity.y = 0;
         vibratorBody.angularVelocity.z = 0;
         vibratorBody.fixedRotation = true;
         vibratorBody.angularDamping = 1;
-        vibratorBody.position.y = y;
-        vibratorBody.position.z = z;
+        // vibratorBody.linearDamping = options.dampingVibrator;
         // vibratorBody.position.x = options.amplitude * (Math.sin(step)) * Math.exp(-t * options.damping/100);
         // vibratorBody.position.y = 0.5;
-        // BuildingCatContactMat.friction = options.friction * 10;
-        // buildingBody.velocity.x = buildingBody.velocity.x  * Math.exp(-step * options.damping);
+        BuildingCatContactMat.friction = options.friction * 10;
+        buildingBody.velocity.x = buildingBody.velocity.x * Math.exp(-t * options.damping * 100);
+        buildingBody.angularVelocity.x = 0;
+        buildingBody.angularVelocity.y = 0;
+        buildingBody.angularVelocity.z = 0;
+        buildingBody.fixedRotation = true;
+        buildingBody.angularDamping = 1;
         // buildingBody.position.x = buildingBody.position.x  * Math.exp(-t * options.damping/1000);
         // buildingBody.angularDamping = -t * options.damping/1000;
         // buildingBody.position.y = buildingBody.position.y  * Math.exp(-t * options.damping/100);
         // buildingBody.position.z = buildingBody.position.z  * Math.exp(-t * options.damping/100);
-        catBody.mass = options.catMass * 500;
+        catBody.mass = options.catMass * 100;
     } else {
         catBody.mass = 50;
-        // BuildingCatContactMat.friction = 100;
+        BuildingCatContactMat.friction = 100;
         if (t > 50) {
             loadingCompleted = true;
-            y = vibratorBody.position.y;
-            z = vibratorBody.position.z;
+            vibrator_y = vibratorBody.position.y;
+            vibrator_z = vibratorBody.position.z;
         }
     }
     // spotLight.angle = options.lightAngle;
@@ -882,7 +943,7 @@ window.addEventListener("resize", function() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","lil-gui":"fkEfG","three/examples/jsm/loaders/GLTFLoader":"dVRsF","cannon-es":"HCu3b","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","cannon-es-debugger":"a5KNJ"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","lil-gui":"fkEfG","three/examples/jsm/loaders/GLTFLoader":"dVRsF","cannon-es":"HCu3b","cannon-es-debugger":"a5KNJ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2022 Three.js Authors
