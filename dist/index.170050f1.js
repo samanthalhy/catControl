@@ -751,7 +751,7 @@ gltfLoader.load("./assets/cat.gltf", function(gltf) {
             const boxSize = box.getSize(new _three.Vector3()).length();
             const boxCenter = box.getCenter(new _three.Vector3());
             // child.position.setY(child.position.y - boxSize / 2); // adjust position in y-axis
-            child.position.setX(child.position.x + 0.013); // adjust position in x-axis
+            child.position.setX(child.position.x - 0.01); // adjust position in x-axis
         }
     });
     gltf.scene.scale.set(25, 25, 25);
@@ -880,10 +880,13 @@ function animate(time) {
     // ball.quaternion.copy(ballBody.quaternion);
     // box.rotation.x = time / 1000;
     // box.rotation.y = time / 1000;
+    let phaseChange = -1.5;
     if (loadingCompleted == true & startButton == true) {
         step += options.speed / 5;
         // vibratorBody.applyImpulse(new CANNON.Vec3(5,0,0), new CANNON.Vec3(0,0,0));
-        vibratorBody.velocity.x = 5 * options.amplitude * Math.sin(step - 1.5) * Math.exp(-t * options.dampingVibrator / 1000);
+        if (options.speed == 0) phaseChange = 0;
+        else phaseChange = -1.5;
+        vibratorBody.velocity.x = 5 * options.amplitude * Math.sin(step + phaseChange) * Math.exp(-t * options.dampingVibrator / 1000);
         vibratorBody.position.y = vibrator_y;
         vibratorBody.position.z = vibrator_z;
         vibratorBody.angularVelocity.x = 0;
