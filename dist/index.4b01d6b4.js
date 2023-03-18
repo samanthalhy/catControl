@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"aZ7FW":[function(require,module,exports) {
+})({"aAWOK":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "ff9a57f5170050f1";
+module.bundle.HMR_BUNDLE_ID = "665dcaba4b01d6b4";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -531,7 +531,7 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"1cGeR":[function(require,module,exports) {
+},{}],"8iOpY":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _three = require("three");
 var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
@@ -540,349 +540,90 @@ var _lilGui = require("lil-gui");
 var _lilGuiDefault = parcelHelpers.interopDefault(_lilGui);
 var _gltfloader = require("three/examples/jsm/loaders/GLTFLoader");
 var _cannonEs = require("cannon-es");
-var _cannonEsDebugger = require("cannon-es-debugger");
-var _cannonEsDebuggerDefault = parcelHelpers.interopDefault(_cannonEsDebugger);
-const renderer = new _three.WebGL1Renderer();
-renderer.shadowMap.enabled = true;
+// Scene and camera setup
+var scene = new _three.Scene();
+var camera = new _three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 10, 20);
+// Renderer setup
+var renderer = new _three.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-const scene = new _three.Scene();
-const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const orbit = new (0, _orbitControlsJs.OrbitControls)(camera, renderer.domElement);
-// const axesHelper = new THREE.AxesHelper(5);
-// scene.add(axesHelper);
-camera.position.set(0, 10, 20);
-camera.up.set(0, 0, 0);
-orbit.update();
-/////////////////////// LIGHT SETTING BELOW ///////////////////////
-// const ambientLight = new THREE.AmbientLight(0xffffff);
-// scene.add(ambientLight);
-const directionalLight = new _three.DirectionalLight(0xffffff, 1.0);
-scene.add(directionalLight);
-directionalLight.position.set(-30, 50, 0);
-directionalLight.castShadow = true;
-directionalLight.shadow.camera.bottom = -12;
-const directionalLight2 = new _three.DirectionalLight(0xffffff, 1.0);
-scene.add(directionalLight2);
-directionalLight2.position.set(30, 50, 10);
-directionalLight2.castShadow = true;
-directionalLight2.shadow.camera.bottom = -12;
-// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
-// scene.add(directionalLightHelper);
-// const dLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-// scene.add(dLightShadowHelper);
-const spotLight = new _three.SpotLight(0xffffff);
-scene.add(spotLight);
-spotLight.position.set(-30, 100, 0);
-spotLight.castShadow = true;
-spotLight.angle = 0.2;
-// const sLightHelper = new THREE.SpotLightHelper(spotLight);
-// scene.add(sLightHelper);
-const spotLight2 = new _three.SpotLight(0xffffff);
-scene.add(spotLight2);
-spotLight2.position.set(30, 0, 100);
-spotLight2.castShadow = true;
-spotLight2.angle = 0.2;
-const spotLight3 = new _three.SpotLight(0xffffff);
-scene.add(spotLight3);
-spotLight3.position.set(-30, 0, 100);
-const spotLight4 = new _three.SpotLight(0xffffff);
-scene.add(spotLight4);
-spotLight4.position.set(30, 0, -100);
-// scene.fog = new THREE.Fog(0xffffff, 0, 200);
-scene.fog = new _three.FogExp2(0xffffff, 0.01);
-// renderer.setClearColor(0xffea00);   // blackground color
-renderer.setClearColor(0xededed); // blackground color
-/////////////////////// GROUND  ///////////////////////
-const world = new _cannonEs.World({
-    gravity: new _cannonEs.Vec3(0, -9.81, 0)
+// Ground plane
+var groundGeometry = new _three.PlaneGeometry(100, 100);
+var groundMaterial = new _three.MeshLambertMaterial({
+    color: 0x808080
 });
-const groundGeometry = new _three.BoxGeometry(18, 0.4, 10);
-const groundMaterial = new _three.MeshStandardMaterial({
-    color: 0xFFFFFF,
-    side: _three.DoubleSide
-});
-const ground = new _three.Mesh(groundGeometry, groundMaterial);
+var ground = new _three.Mesh(groundGeometry, groundMaterial);
+ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
-// ground.rotation.x = -0.5 * Math.PI;
-ground.receiveShadow = true;
-const groundPhysMat = new _cannonEs.Material();
-const groundBody = new _cannonEs.Body({
-    shape: new _cannonEs.Box(new _cannonEs.Vec3(9, 0.2, 5)),
-    // mass:10
-    type: _cannonEs.Body.STATIC,
-    material: groundPhysMat
+// Red brick
+var redBrickGeometry = new _three.BoxGeometry(1, 0.5, 2);
+var redBrickMaterial = new _three.MeshLambertMaterial({
+    color: 0xff0000
 });
+var redBrick = new _three.Mesh(redBrickGeometry, redBrickMaterial);
+redBrick.position.set(0, 0.25, 0);
+scene.add(redBrick);
+// Green brick
+var greenBrickGeometry = new _three.BoxGeometry(1, 0.5, 2);
+var greenBrickMaterial = new _three.MeshLambertMaterial({
+    color: 0x00ff00
+});
+var greenBrick = new _three.Mesh(greenBrickGeometry, greenBrickMaterial);
+greenBrick.position.set(0, 1.25, 0);
+scene.add(greenBrick);
+// Cat
+var catGeometry = new _three.BoxGeometry(0.5, 0.5, 0.5);
+var catMaterial = new _three.MeshLambertMaterial({
+    color: 0x0000ff
+});
+var cat = new _three.Mesh(catGeometry, catMaterial);
+cat.position.set(0, 2.25, 0);
+scene.add(cat);
+// Cannon.js setup
+var world = new _cannonEs.World();
+world.gravity.set(0, -9.82, 0);
+var groundShape = new _cannonEs.Plane();
+var groundBody = new _cannonEs.Body({
+    mass: 0
+});
+groundBody.addShape(groundShape);
 world.addBody(groundBody);
-// groundBody.quaternion.setFromEuler(-Math.PI/2,0,0);
-const gridHelper = new _three.GridHelper(20);
-scene.add(gridHelper);
-/////////////////////// Vibrator BELOW ///////////////////////
-// var N = 20, space = 0.1, mass = 0, width = 10, hHeight = 1, last;
-// var halfVec = new CANNON.Vec3(width, hHeight, 0.2);//刚体的长宽高的halfSize向量
-// var boxShape = new CANNON.Box(halfVec);//定义一个长方体数据
-// var boxGeometry = new THREE.BoxBufferGeometry(100,10,10);//定义一个长方几何体
-// var boxMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );//定义几何体材质
-// var boxBody = new CANNON.Body({mass: mass, material: new CANNON.Material({friction: 0.05, restitution: 0})});//创建刚体，第一个刚体的质量设置成0（即为不动的刚体），定义材质，并设置摩擦系数和弹性系数
-// boxBody.addShape(boxShape);//为刚体添加形状
-// var boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);//创建three世界的网格
-// boxBody.position.set(5,25,0);//这里设置刚体的位置，是由上倒下的顺序
-// boxBody.linearDamping = 0.01;//设置线性阻尼
-// boxBody.angularDamping = 0.01;//设置旋转阻尼
-// world.addBody(boxBody);//将刚体添加到物理世界中
-const vibratorGeometry = new _three.BoxGeometry(10, 5, 8);
-const vibratorMaterial = new _three.MeshNormalMaterial({
-    color: 0xFF0000
-}, {
-    roughness: 0.2
+var redBrickShape = new _cannonEs.Box(new _cannonEs.Vec3(0.5, 0.25, 1));
+var redBrickBody = new _cannonEs.Body({
+    mass: 1
 });
-const vibrator = new _three.Mesh(vibratorGeometry, vibratorMaterial);
-scene.add(vibrator);
-// box.position.set(5,5,5);
-const vibratorPhysMat = new _cannonEs.Material({
-    friction: 0.2,
-    restitution: 0.0
+redBrickBody.addShape(redBrickShape);
+redBrickBody.position.copy(redBrick.position);
+world.addBody(redBrickBody);
+var greenBrickShape = new _cannonEs.Box(new _cannonEs.Vec3(0.5, 0.25, 1));
+var greenBrickBody = new _cannonEs.Body({
+    mass: 1
 });
-const vibratorBody = new _cannonEs.Body({
-    shape: new _cannonEs.Box(new _cannonEs.Vec3(5, 2.5, 4)),
-    mass: 30,
-    position: new _cannonEs.Vec3(-0.2, 6.5, 0),
-    material: vibratorPhysMat
+greenBrickBody.addShape(greenBrickShape);
+greenBrickBody.position.copy(greenBrick.position);
+world.addBody(greenBrickBody);
+var catShape = new _cannonEs.Box(new _cannonEs.Vec3(0.25, 0.25, 0.25));
+var catBody = new _cannonEs.Body({
+    mass: 1
 });
-world.addBody(vibratorBody);
-// vibratorBody.angularDamping = 0.5;
-vibrator.receiveShadow = true;
-/////////////////////// BUILDING BELOW ///////////////////////
-// const buildingGeometry = new THREE.BoxGeometry(5, 8, 4.5);
-// // const buildingGeometry = new THREE.BoxGeometry(5, 0.5, 4.5);
-// const buildingMaterial = new THREE.MeshStandardMaterial({color: 0x00FF00}, {roughness: 0.5});
-// const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
-// scene.add(building);
-// // box.position.set(5,5,5);
-// const buildingPhysMat = new CANNON.Material({friction: 0.8, restitution: 0.1});
-// const buildingBody = new CANNON.Body({
-//     shape: new CANNON.Box(new CANNON.Vec3(2.5, 4, 2.25)),
-//     // shape: new CANNON.Box(new CANNON.Vec3(5, 0.3, 4.3)),
-//     mass: 10,
-//     position: new CANNON.Vec3(0,4.8,-0.2),
-//     material: buildingPhysMat
-// });
-// world.addBody(buildingBody);
-// // buildingBody.angularDamping = 0.5;
-// buildingBody.linearDamping = 0;
-// building.receiveShadow = true;
-/////////////////////// CAT INSTANCES BELOW ///////////////////////
-const gltfLoader = new (0, _gltfloader.GLTFLoader)();
-// const catMeshes = new THREE.Object3D;
-// const catBodies = new CANNON.Body;
-let cat3d = new _three.Object3D();
-gltfLoader.load("./assets/cat.gltf", function(gltf) {
-    const model = gltf.scene;
-    scene.add(model);
-    cat3d = model;
-    // cat3d.scale.multiplyScalar(30);
-    // cat3d.position.set(0,0,0);
-    // cat3d.traverse(function(node){
-    //     if (node.isMesh)
-    //         node.castShadow = true;
-    // });
-    cat3d.traverse(function(child) {
-        if (child.isMesh) child.geometry.center(); // center here
-    });
-    gltf.scene.scale.set(30, 30, 30) // scale here
-    ;
-    scene.add(gltf.scene);
-}, (xhr)=>xhr, (err)=>console.error(e));
-// var mroot = cat3d;
-// var bbox = new THREE.Box3().setFromObject(cat3d);
-// var cent = bbox.getCenter(new THREE.Vector3());
-// var size = bbox.getSize(new THREE.Vector3());
-// //Rescale the object to normalized space
-// var maxAxis = Math.max(size.x, size.y, size.z);
-// cat3d.scale.multiplyScalar(1.0 / maxAxis);
-// bbox.setFromObject(cat3d);
-// bbox.getCenter(cent);
-// bbox.getSize(size);
-// //Reposition to 0,halfY,0
-// cat3d.position.copy(cent).multiplyScalar(-1);
-// cat3d.position.y-= (size.y * 0.5);
-const catPhysMat = new _cannonEs.Material({
-    friction: 0.99,
-    restitution: 0.01
-});
-const catBody = new _cannonEs.Body({
-    shape: new _cannonEs.Box(new _cannonEs.Vec3(2, 2, 3.5)),
-    mass: 50,
-    position: new _cannonEs.Vec3(0.3, 12.5, 1),
-    material: catPhysMat
-});
+catBody.addShape(catShape);
+catBody.position.copy(cat.position);
 world.addBody(catBody);
-/////////////////////// RELATIONSHIP BELOW ///////////////////////
-// const lockConstraintGround = new CANNON.LockConstraint(buildingBody, catBody);
-// world.addConstraint(lockConstraintGround);
-// const lockConstraint = new CANNON.LockConstraint(vibratorBody, buildingBody);
-// world.addConstraint(lockConstraint);
-// const BuildingVibratorContactMat = new CANNON.ContactMaterial(
-//     buildingPhysMat,
-//     vibratorPhysMat,
-//     {friction: 0.1}
-// );
-// world.addContactMaterial(BuildingVibratorContactMat);
-// var BuildingCatContactMat = new CANNON.ContactMaterial(
-//     buildingPhysMat,
-//     catPhysMat,
-//     {friction: 0.9}
-// );
-// world.addContactMaterial(BuildingCatContactMat);
-const VibratorGroundContactMat = new _cannonEs.ContactMaterial(vibratorPhysMat, groundBody, {
-    friction: 0.01
-});
-world.addContactMaterial(VibratorGroundContactMat);
-const VibratorCatContactMat = new _cannonEs.ContactMaterial(vibratorPhysMat, catPhysMat, {
-    friction: 1
-});
-world.addContactMaterial(VibratorCatContactMat);
-/////////////////////// OBJECTS INSTANCES BELOW ///////////////////////
-/////////////////////// CONTROL PANEL BELOW ///////////////////////
-let t = 0;
-let startButton = false;
-let resetClicked = false;
-const gui = new (0, _lilGuiDefault.default)();
-const defVal_bg = "0xededed";
-const defVal_speed = 0.00;
-const defVal_friction = 0.5;
-// const defVal_friction = 0.001;
-const defVal_amplitude = 1;
-const defVal_damping = 0.0;
-const defVal_catMass = 1;
-var options = {
-    blackgroundColor: defVal_bg,
-    frequency: defVal_speed,
-    friction: defVal_friction,
-    amplitude: defVal_amplitude,
-    damping: defVal_damping,
-    catMass: defVal_catMass,
-    // lightAngle: 0.2,
-    // penumbra: 0,
-    // intensity: 1
-    Start: function() {
-        t = 0;
-        startButton = true;
-    },
-    ResetTime: function() {
-        t = 0;
-    },
-    ResetAll: function() {
-        t = 0;
-        resetClicked = true;
-        gui.reset();
-        window.location.reload();
-    }
-};
-gui.addColor(options, "blackgroundColor").onChange(function(e1) {
-    renderer.setClearColor(e1);
-});
-gui.add(options, "frequency", 0, 1);
-gui.add(options, "friction", 0, 1);
-gui.add(options, "amplitude", 0, 9);
-gui.add(options, "damping", 0, 1);
-gui.add(options, "catMass", 0, 1);
-gui.add(options, "Start");
-gui.add(options, "ResetTime");
-gui.add(options, "ResetAll");
-/////////////////////// LOOP BELOW ///////////////////////
-const timeStep = 1 / 60;
-let step = 0;
-const mousePosition = new _three.Vector2();
-window.addEventListener("mousemove", function(e1) {
-    mousePosition.x = e1.clientX / window.innerWidth * 2 - 1;
-    mousePosition.y = -(e1.clientY / window.innerHeight) * 2 + 1;
-});
-const rayCaster = new _three.Raycaster();
-// const sphereId = sphere.id;
-// cat.name = 'theCat';
-let loadingCompleted = false;
-let y = 0;
-let z = 0;
-function animate(time) {
-    t += 1;
-    world.step(timeStep);
-    ground.position.copy(groundBody.position);
-    ground.quaternion.copy(groundBody.quaternion);
-    vibrator.position.copy(vibratorBody.position);
-    vibrator.quaternion.copy(vibratorBody.quaternion);
-    // building.position.copy(buildingBody.position);
-    // building.quaternion.copy(buildingBody.quaternion);
-    cat3d.position.copy(catBody.position);
-    // cat3d.position.y -= 5.4;
-    // catBody.position.y +=4.5;
-    cat3d.quaternion.copy(catBody.quaternion);
-    // ball.position.copy(ballBody.position);
-    // ball.quaternion.copy(ballBody.quaternion);
-    // box.rotation.x = time / 1000;
-    // box.rotation.y = time / 1000;
-    if (loadingCompleted == true & startButton == true) {
-        step += options.frequency / 5;
-        // vibratorBody.applyImpulse(new CANNON.Vec3(5,0,0), new CANNON.Vec3(0,0,0));
-        vibratorBody.velocity.x = 5 * options.amplitude * Math.cos(step);
-        // vibratorBody.linearDamping = options.damping;
-        vibratorBody.velocity.x = vibratorBody.velocity.x * Math.exp(-t * options.damping / 300);
-        vibratorBody.velocity.y = 0;
-        vibratorBody.velocity.z = 0;
-        vibratorBody.angularVelocity.x = 0;
-        vibratorBody.angularVelocity.y = 0;
-        vibratorBody.angularVelocity.z = 0;
-        vibratorBody.fixedRotation = true;
-        vibratorBody.angularDamping = 1;
-        vibratorBody.position.y = y;
-        vibratorBody.position.z = z;
-        // vibratorBody.position.x = options.amplitude * (Math.sin(step)) * Math.exp(-t * options.damping/100);
-        // vibratorBody.position.y = 0.5;
-        // BuildingCatContactMat.friction = options.friction * 10;
-        // buildingBody.velocity.x = buildingBody.velocity.x  * Math.exp(-step * options.damping);
-        // buildingBody.position.x = buildingBody.position.x  * Math.exp(-t * options.damping/1000);
-        // buildingBody.angularDamping = -t * options.damping/1000;
-        // buildingBody.position.y = buildingBody.position.y  * Math.exp(-t * options.damping/100);
-        // buildingBody.position.z = buildingBody.position.z  * Math.exp(-t * options.damping/100);
-        catBody.mass = options.catMass * 500;
-    } else {
-        catBody.mass = 50;
-        // BuildingCatContactMat.friction = 100;
-        if (t > 50) {
-            loadingCompleted = true;
-            y = vibratorBody.position.y;
-            z = vibratorBody.position.z;
-        }
-    }
-    // spotLight.angle = options.lightAngle;
-    // spotLight.penumbra = options.penumbra;
-    // spotLight.intensity = options.intensity;
-    // sLightHelper.update();
-    rayCaster.setFromCamera(mousePosition, camera);
-    const intersects = rayCaster.intersectObjects(scene.children);
-    // console.log(intersects);
-    // for(let i = 0; i < intersects.length; i++){
-    //     if (intersects[i].object.id === sphereId){
-    //         intersects[i].object.material.color.set(0xFF0000);
-    //     }
-    //     if (intersects[i].object.name === 'theCat'){
-    //         intersects[i].object.rotation.x = time / 1000;
-    //         intersects[i].object.rotation.y = time / 1000;
-    //     }
-    // }
-    // if (cat3d)
-    //     cat3d.rotation.y = -time / 3000;
-    renderer.render(scene, camera);
+// Vibration function
+function applyVibration() {
+    // Calculate the force to apply to the red brick
+    const t = clock.getElapsedTime();
+    const vibrationForce = Math.sin(vibrationFrequency * t) * vibrationAmplitude;
+    // Apply the force to the red brick
+    redBrickBody.applyLocalForce(new _cannonEs.Vec3(0, vibrationForce, 0), new _cannonEs.Vec3(0, 0, 0));
+    // Wake up all the bodies in the world
+    world.bodies.forEach((body)=>body.wakeUp());
+    // Request the next frame
+    requestAnimationFrame(applyVibration);
 }
-renderer.gammaOutput = true;
-renderer.setAnimationLoop(animate);
-window.addEventListener("resize", function() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
 
-},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","lil-gui":"fkEfG","three/examples/jsm/loaders/GLTFLoader":"dVRsF","cannon-es":"HCu3b","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","cannon-es-debugger":"a5KNJ"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","lil-gui":"fkEfG","three/examples/jsm/loaders/GLTFLoader":"dVRsF","cannon-es":"HCu3b","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2022 Three.js Authors
@@ -43912,210 +43653,6 @@ const endShapeContactEvent = {
     shapeB: null
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"a5KNJ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>CannonDebugger);
-var _cannonEs = require("cannon-es");
-var _three = require("three");
-function CannonDebugger(scene, world, _temp) {
-    let { color =0x00ff00 , scale =1 , onInit , onUpdate  } = _temp === void 0 ? {} : _temp;
-    const _meshes = [];
-    const _material = new (0, _three.MeshBasicMaterial)({
-        color: color != null ? color : 0x00ff00,
-        wireframe: true
-    });
-    const _tempVec0 = new (0, _cannonEs.Vec3)();
-    const _tempVec1 = new (0, _cannonEs.Vec3)();
-    const _tempVec2 = new (0, _cannonEs.Vec3)();
-    const _tempQuat0 = new (0, _cannonEs.Quaternion)();
-    const _sphereGeometry = new (0, _three.SphereGeometry)(1);
-    const _boxGeometry = new (0, _three.BoxGeometry)(1, 1, 1);
-    const _planeGeometry = new (0, _three.PlaneGeometry)(10, 10, 10, 10); // Move the planeGeometry forward a little bit to prevent z-fighting
-    _planeGeometry.translate(0, 0, 0.0001);
-    function createConvexPolyhedronGeometry(shape) {
-        const geometry = new (0, _three.BufferGeometry)(); // Add vertices
-        const positions = [];
-        for(let i = 0; i < shape.vertices.length; i++){
-            const vertex = shape.vertices[i];
-            positions.push(vertex.x, vertex.y, vertex.z);
-        }
-        geometry.setAttribute("position", new (0, _three.Float32BufferAttribute)(positions, 3)); // Add faces
-        const indices = [];
-        for(let i1 = 0; i1 < shape.faces.length; i1++){
-            const face = shape.faces[i1];
-            const a = face[0];
-            for(let j = 1; j < face.length - 1; j++){
-                const b = face[j];
-                const c = face[j + 1];
-                indices.push(a, b, c);
-            }
-        }
-        geometry.setIndex(indices);
-        geometry.computeBoundingSphere();
-        geometry.computeVertexNormals();
-        return geometry;
-    }
-    function createTrimeshGeometry(shape) {
-        const geometry = new (0, _three.BufferGeometry)();
-        const positions = [];
-        const v0 = _tempVec0;
-        const v1 = _tempVec1;
-        const v2 = _tempVec2;
-        for(let i = 0; i < shape.indices.length / 3; i++){
-            shape.getTriangleVertices(i, v0, v1, v2);
-            positions.push(v0.x, v0.y, v0.z);
-            positions.push(v1.x, v1.y, v1.z);
-            positions.push(v2.x, v2.y, v2.z);
-        }
-        geometry.setAttribute("position", new (0, _three.Float32BufferAttribute)(positions, 3));
-        geometry.computeBoundingSphere();
-        geometry.computeVertexNormals();
-        return geometry;
-    }
-    function createHeightfieldGeometry(shape) {
-        const geometry = new (0, _three.BufferGeometry)();
-        const s = shape.elementSize || 1; // assumes square heightfield, else i*x, j*y
-        const positions = shape.data.flatMap((row, i)=>row.flatMap((z, j)=>[
-                    i * s,
-                    j * s,
-                    z
-                ]));
-        const indices = [];
-        for(let xi = 0; xi < shape.data.length - 1; xi++)for(let yi = 0; yi < shape.data[xi].length - 1; yi++){
-            const stride = shape.data[xi].length;
-            const index = xi * stride + yi;
-            indices.push(index + 1, index + stride, index + stride + 1);
-            indices.push(index + stride, index + 1, index);
-        }
-        geometry.setIndex(indices);
-        geometry.setAttribute("position", new (0, _three.Float32BufferAttribute)(positions, 3));
-        geometry.computeBoundingSphere();
-        geometry.computeVertexNormals();
-        return geometry;
-    }
-    function createMesh(shape) {
-        let mesh = new (0, _three.Mesh)();
-        const { SPHERE , BOX , PLANE , CYLINDER , CONVEXPOLYHEDRON , TRIMESH , HEIGHTFIELD  } = (0, _cannonEs.Shape).types;
-        switch(shape.type){
-            case SPHERE:
-                mesh = new (0, _three.Mesh)(_sphereGeometry, _material);
-                break;
-            case BOX:
-                mesh = new (0, _three.Mesh)(_boxGeometry, _material);
-                break;
-            case PLANE:
-                mesh = new (0, _three.Mesh)(_planeGeometry, _material);
-                break;
-            case CYLINDER:
-                {
-                    const geometry = new (0, _three.CylinderGeometry)(shape.radiusTop, shape.radiusBottom, shape.height, shape.numSegments);
-                    mesh = new (0, _three.Mesh)(geometry, _material);
-                    shape.geometryId = geometry.id;
-                    break;
-                }
-            case CONVEXPOLYHEDRON:
-                {
-                    const geometry1 = createConvexPolyhedronGeometry(shape);
-                    mesh = new (0, _three.Mesh)(geometry1, _material);
-                    shape.geometryId = geometry1.id;
-                    break;
-                }
-            case TRIMESH:
-                {
-                    const geometry2 = createTrimeshGeometry(shape);
-                    mesh = new (0, _three.Mesh)(geometry2, _material);
-                    shape.geometryId = geometry2.id;
-                    break;
-                }
-            case HEIGHTFIELD:
-                {
-                    const geometry3 = createHeightfieldGeometry(shape);
-                    mesh = new (0, _three.Mesh)(geometry3, _material);
-                    shape.geometryId = geometry3.id;
-                    break;
-                }
-        }
-        scene.add(mesh);
-        return mesh;
-    }
-    function scaleMesh(mesh, shape) {
-        const { SPHERE , BOX , PLANE , CYLINDER , CONVEXPOLYHEDRON , TRIMESH , HEIGHTFIELD  } = (0, _cannonEs.Shape).types;
-        switch(shape.type){
-            case SPHERE:
-                {
-                    const { radius  } = shape;
-                    mesh.scale.set(radius * scale, radius * scale, radius * scale);
-                    break;
-                }
-            case BOX:
-                mesh.scale.copy(shape.halfExtents);
-                mesh.scale.multiplyScalar(2 * scale);
-                break;
-            case PLANE:
-                break;
-            case CYLINDER:
-                mesh.scale.set(1 * scale, 1 * scale, 1 * scale);
-                break;
-            case CONVEXPOLYHEDRON:
-                mesh.scale.set(1 * scale, 1 * scale, 1 * scale);
-                break;
-            case TRIMESH:
-                mesh.scale.copy(shape.scale).multiplyScalar(scale);
-                break;
-            case HEIGHTFIELD:
-                mesh.scale.set(1 * scale, 1 * scale, 1 * scale);
-                break;
-        }
-    }
-    function typeMatch(mesh, shape) {
-        if (!mesh) return false;
-        const { geometry  } = mesh;
-        return geometry instanceof (0, _three.SphereGeometry) && shape.type === (0, _cannonEs.Shape).types.SPHERE || geometry instanceof (0, _three.BoxGeometry) && shape.type === (0, _cannonEs.Shape).types.BOX || geometry instanceof (0, _three.PlaneGeometry) && shape.type === (0, _cannonEs.Shape).types.PLANE || geometry.id === shape.geometryId && shape.type === (0, _cannonEs.Shape).types.CYLINDER || geometry.id === shape.geometryId && shape.type === (0, _cannonEs.Shape).types.CONVEXPOLYHEDRON || geometry.id === shape.geometryId && shape.type === (0, _cannonEs.Shape).types.TRIMESH || geometry.id === shape.geometryId && shape.type === (0, _cannonEs.Shape).types.HEIGHTFIELD;
-    }
-    function updateMesh(index, shape) {
-        let mesh = _meshes[index];
-        let didCreateNewMesh = false;
-        if (!typeMatch(mesh, shape)) {
-            if (mesh) scene.remove(mesh);
-            _meshes[index] = mesh = createMesh(shape);
-            didCreateNewMesh = true;
-        }
-        scaleMesh(mesh, shape);
-        return didCreateNewMesh;
-    }
-    function update() {
-        const meshes = _meshes;
-        const shapeWorldPosition = _tempVec0;
-        const shapeWorldQuaternion = _tempQuat0;
-        let meshIndex = 0;
-        for (const body of world.bodies)for(let i = 0; i !== body.shapes.length; i++){
-            const shape = body.shapes[i];
-            const didCreateNewMesh = updateMesh(meshIndex, shape);
-            const mesh = meshes[meshIndex];
-            if (mesh) {
-                // Get world position
-                body.quaternion.vmult(body.shapeOffsets[i], shapeWorldPosition);
-                body.position.vadd(shapeWorldPosition, shapeWorldPosition); // Get world quaternion
-                body.quaternion.mult(body.shapeOrientations[i], shapeWorldQuaternion); // Copy to meshes
-                mesh.position.copy(shapeWorldPosition);
-                mesh.quaternion.copy(shapeWorldQuaternion);
-                if (didCreateNewMesh && onInit instanceof Function) onInit(body, mesh, shape);
-                if (!didCreateNewMesh && onUpdate instanceof Function) onUpdate(body, mesh, shape);
-            }
-            meshIndex++;
-        }
-        for(let i1 = meshIndex; i1 < meshes.length; i1++){
-            const mesh1 = meshes[i1];
-            if (mesh1) scene.remove(mesh1);
-        }
-        meshes.length = meshIndex;
-    }
-    return {
-        update
-    };
-}
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["aAWOK","8iOpY"], "8iOpY", "parcelRequire7aad")
 
-},{"cannon-es":"HCu3b","three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["aZ7FW","1cGeR"], "1cGeR", "parcelRequire7aad")
-
-//# sourceMappingURL=index.170050f1.js.map
+//# sourceMappingURL=index.4b01d6b4.js.map
