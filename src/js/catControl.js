@@ -261,7 +261,7 @@ gltfLoader.load('./assets/cat.gltf', function(gltf){
             const boxSize = box.getSize(new THREE.Vector3()).length();
             const boxCenter = box.getCenter(new THREE.Vector3());
             // child.position.setY(child.position.y - boxSize / 2); // adjust position in y-axis
-            child.position.setX(child.position.x -0.01); // adjust position in x-axis
+            child.position.setX(child.position.x -0.012); // adjust position in x-axis
         }
     });
     gltf.scene.scale.set(25,25,25);
